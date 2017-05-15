@@ -1,12 +1,12 @@
 import RPi.GPIO as GPIO
 import time
 import ultrasonic as ultra
-signal = 22
+signal = 18
 GPIO.setmode(GPIO.BOARD)
 GPIO.setup(signal,GPIO.OUT)
 
 pwm=GPIO.PWM(signal,50)
-pwm.start(3.5)
+pwm.start(7)
 time.sleep(1)
 pwm.ChangeDutyCycle(4)
 time.sleep(1)

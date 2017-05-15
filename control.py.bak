@@ -4,18 +4,29 @@ from time import sleep
 import sys
 import os,tty,termios,time
 
+
+
 rightf = 11
 leftf = 13
 rightb = 16
 leftb = 15
+righte = 40
+lefte = 38
 
 GPIO.setmode(GPIO.BOARD)
 GPIO.setup(leftb, GPIO.OUT)
 GPIO.setup(leftf, GPIO.OUT)
+GPIO.setup(righte, GPIO.OUT)
 GPIO.setup(rightf, GPIO.OUT)
 GPIO.setup(rightb, GPIO.OUT)
+GPIO.setup(lefte, GPIO.OUT)
 
-sleep_time = 0.03
+Motor1 = GPIO.PWM(righte, 50)
+Motor1.start(0)
+Motor2 = GPIO.PWM(lefte, 50)
+Motor2.start(0)
+
+sleep_time = 0.050
 
 
 def getch():
@@ -29,78 +40,101 @@ def getch():
     return ch
 
 
-def forward():
+def forward(speed):
     GPIO.output(leftb, False)
     GPIO.output(leftf, True)
     GPIO.output(rightf, True)
     GPIO.output(rightb, False)
+    Motor1.ChangeDutyCycle(85)
+    Motor2.ChangeDutyCycle(100)
     sleep(sleep_time)
-    stop()
+    Motor1.ChangeDutyCycle(0)
+    Motor2.ChangeDutyCycle(0)
     print 'forward'
-def backward():
+def backward(speed):
 
     GPIO.output(leftb, True)
     GPIO.output(leftf, False)
     GPIO.output(rightf, False)
     GPIO.output(rightb, True)
+    Motor1.ChangeDutyCycle(85)
+    Motor2.ChangeDutyCycle(100)
     sleep(sleep_time)
-    stop()
+    Motor1.ChangeDutyCycle(0)
+    Motor2.ChangeDutyCycle(0)
 
     print 'backward'
-def left():
+def left(speed):
     GPIO.output(leftb, False)
     GPIO.output(leftf, True)
     GPIO.output(rightb, True)
     GPIO.output(rightf, True)
+    Motor1.ChangeDutyCycle(speed)
+    Motor2.ChangeDutyCycle(speed)
     sleep(sleep_time)
-    stop()
+    Motor1.ChangeDutyCycle(0)
+    Motor2.ChangeDutyCycle(0)
 
     print 'left'
-def right():
+def right(speed):
     GPIO.output(leftb, True)
     GPIO.output(leftf, True)
     GPIO.output(rightf, True)
     GPIO.output(rightb, False)
+    Motor1.ChangeDutyCycle(speed)
+    Motor2.ChangeDutyCycle(speed)
     sleep(sleep_time)
-    stop()
+    Motor1.ChangeDutyCycle(0)
+    Motor2.ChangeDutyCycle(0)
+
     print 'right'
-def pivot_left():
+def pivot_left(speed):
     GPIO.output(leftb, False)
     GPIO.output(leftf, True)
     GPIO.output(rightf, False)
     GPIO.output(rightb, True)
+    Motor1.ChangeDutyCycle(speed)
+    Motor2.ChangeDutyCycle(speed)
     sleep(sleep_time)
-    stop()
+    Motor1.ChangeDutyCycle(0)
+    Motor2.ChangeDutyCycle(0)
+
     print 'pivot_left'
-def pivot_right():
+def pivot_right(speed):
     GPIO.output(leftb, True)
     GPIO.output(leftf, False)
     GPIO.output(rightf, True)
     GPIO.output(rightb, False)
+    Motor1.ChangeDutyCycle(speed)
+    Motor2.ChangeDutyCycle(speed)
     sleep(sleep_time)
-    stop()
+    Motor1.ChangeDutyCycle(0)
+    Motor2.ChangeDutyCycle(0)
+
     print 'pivot_right'
 def stop():
-    GPIO.output(leftb,False)
-    GPIO.output(leftf,False)
-    GPIO.output(rightf,False)
-    GPIO.output(rightb,False)
+    Motor1.ChangeDutyCycle(0)
+    Motor2.ChangeDutyCycle(0)
+    GPIO.cleanup()
+
+
+
 
 while True:
     char = getch()
     speed = 100
     if(char == 'w'):
-        forward()
+        forward(speed)
     if(char == 's'):
-        backward()
+        backward(speed)
     if(char == 'a'):
-        left()
+        left(speed)
     if(char == 'd'):
-        right()
+        right(speed)
     if(char == 'q'):
-        pivot_left()
+        pivot_left(speed)
     if(char == 'e'):
-        pivot_right()
+        pivot_right(speed)
     #if(char == 'c'):
     #    os.system('/home/pi/camera/startstream.sh')
     #if(char == 'x'):
@@ -110,5 +144,7 @@ while True:
         break
 
 
+Motor1.ChangeDutyCycle(0)
+Motor2.ChangeDutyCycle(0)
 
 char = ""

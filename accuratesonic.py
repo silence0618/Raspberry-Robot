@@ -6,8 +6,8 @@ import time
 
 import pigpio
 
-TRIGGER=18
-ECHO=7
+TRIGGER=29
+ECHO=22
 
 high_tick = None # global to hold high tick.
 
